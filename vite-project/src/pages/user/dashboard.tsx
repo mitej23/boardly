@@ -13,7 +13,9 @@ const Dashboard = () => {
       <div className="flex flex-row items-center justify-between">
         <SearchInput />
         {/* using math.random on key will not persist the previously enter data in the modal -- Mitej Madan  */}
-        <Button onClick={() => setOpen(<CreateBoard key={Math.random()} />)}>
+        <Button
+          size={"sm"}
+          onClick={() => setOpen(<CreateBoard key={Math.random()} />)}>
           Create Board
         </Button>
       </div>

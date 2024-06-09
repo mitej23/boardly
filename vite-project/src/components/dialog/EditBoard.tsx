@@ -49,7 +49,7 @@ const EditBoard: React.FC<EditBoardProps> = ({ id, name }) => {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleEditBoard}>
+          <Button size={"sm"} type="submit" onClick={handleEditBoard}>
             Edit Board
           </Button>
         </DialogFooter>

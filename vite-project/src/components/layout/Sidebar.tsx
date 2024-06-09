@@ -1,6 +1,7 @@
 import { LayoutDashboard, Settings } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 const Sidebar = () => {
   const links = [
@@ -8,13 +9,13 @@ const Sidebar = () => {
       id: 1,
       name: "Dasboard",
       path: "/dashboard",
-      icon: <LayoutDashboard size={20} className="mr-2" />,
+      icon: <LayoutDashboard size={20} className="mr-4 h-4 w-4" />,
     },
     {
       id: 2,
       name: "Settings",
       path: "/settings",
-      icon: <Settings size={20} className="mr-2" />,
+      icon: <Settings size={20} className="mr-4 h-4 w-4" />,
     },
   ];
 
@@ -27,11 +28,12 @@ const Sidebar = () => {
             <NavLink
               key={id}
               className={({ isActive }) =>
-                `${
+                cn(
                   isActive
-                    ? "font-bold bg-gray-200 text-gray-800"
-                    : "hover:bg-gray-100 "
-                } mx-4 text-center py-2 px-4 text-md rounded-md flex flex-row items-center`
+                    ? buttonVariants({ variant: "default", size: "sm" })
+                    : buttonVariants({ variant: "ghost", size: "sm" }),
+                  `${isActive ? "" : " "} justify-start mx-4 `
+                )
               }
               to={path}>
               {icon}
@@ -41,6 +43,7 @@ const Sidebar = () => {
         })}
         <div className="mt-auto mx-4">
           <Button
+            size={"sm"}
             className="w-full bg-red-50 border-red-200 text-red-400 hover:bg-red-200 hover:text-red-500"
             variant="outline">
             Logout

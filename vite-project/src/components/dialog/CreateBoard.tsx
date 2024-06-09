@@ -46,7 +46,7 @@ const CreateBoard: React.FC = () => {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleCreateBoard}>
+          <Button size={"sm"} type="submit" onClick={handleCreateBoard}>
             Create Board
           </Button>
         </DialogFooter>
