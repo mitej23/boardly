@@ -15,6 +15,13 @@
       "when": 1717333057589,
       "tag": "0001_luxuriant_vermin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1717675456499,
+      "tag": "0002_dry_vertigo",
+      "breakpoints": true
     }
   ]
 }

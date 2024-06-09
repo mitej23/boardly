@@ -9,5 +9,25 @@ export const users = pgTable('users', {
   refreshToken: text('refresh_token'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
-  // Add other fields necessary for JWT authentication if needed
+});
+
+export const users_boards = pgTable('users_boards', {
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  boardId: uuid('board_id').references(() => boards.id, { onDelete: 'cascade' }),
+});
+
+export const boards = pgTable('boards', {
+  id: uuid('id').primaryKey(),
+  name: text('name').notNull(),
+  createdBy: uuid('created_by').references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().$onUpdate(() => new Date()),
+});
+
+export const shareable_links = pgTable('shareable_links', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  boardId: uuid('board_id').references(() => boards.id, { onDelete: 'cascade' }).notNull(),
+  link: varchar('link', 255).notNull().unique(), // You may generate a unique link string
+  createdAt: timestamp('created_at').defaultNow(),
+  expiresAt: timestamp('expires_at'), // Optional: if you want to set an expiration for the link
 });
