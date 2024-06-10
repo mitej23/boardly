@@ -1,19 +1,30 @@
-import { eq } from "drizzle-orm";
+import { and, eq, ilike } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { users, boards, users_boards } from "../db/schema.js";
+import { date } from "drizzle-orm/pg-core";
 
 // Fetch all boards for a user
 const getUserBoards = async (req, res) => {
   try {
     const userId = req.user.id;
+    const query = req.query.query || ''
 
     const userBoards = await db
-      .select()
+      .select({
+        boardId: boards.id,
+        boardName: boards.name,
+        createdById: boards.createdBy,
+        createdByName: users.name,
+        updatedAt: boards.updatedAt
+      })
       .from(boards)
       .innerJoin(users_boards, eq(users_boards.boardId, boards.id))
-      .where(eq(users_boards.userId, userId));
+      .innerJoin(users, eq(users.id, boards.createdBy))
+      .where(and(eq(users_boards.userId, userId), ilike(boards.name, `%${query}%`)));
 
-    return res.status(200).json(userBoards);
+    return res.status(200).json({
+      data: userBoards
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
@@ -71,8 +82,7 @@ const createBoard = async (req, res) => {
 // Update an existing board
 const updateBoard = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name } = req.body;
+    const { name, id } = req.body;
 
     const updatedBoard = await db
       .update(boards)
@@ -94,7 +104,7 @@ const updateBoard = async (req, res) => {
 // Delete a board
 const deleteBoard = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
 
     const deletedBoard = await db
       .delete(boards)

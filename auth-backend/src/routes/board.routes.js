@@ -14,9 +14,9 @@ router.get('/:id', verifyJWT, getBoardById);
 router.post('/createNewBoard', verifyJWT, createBoard);
 
 // Update an existing board
-router.post('/updateBoard/:id', verifyJWT, updateBoard);
+router.post('/updateBoard', verifyJWT, updateBoard);
 
 // Delete a board
-router.post('/deleteBoard/:id', verifyJWT, deleteBoard);
+router.post('/deleteBoard', verifyJWT, deleteBoard);
 
 export default router;

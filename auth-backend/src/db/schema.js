@@ -17,7 +17,7 @@ export const users_boards = pgTable('users_boards', {
 });
 
 export const boards = pgTable('boards', {
-  id: uuid('id').primaryKey(),
+  id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull(),
   createdBy: uuid('created_by').references(() => users.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
