@@ -2,8 +2,10 @@ import { LayoutDashboard, Settings } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Button, buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 const Sidebar = () => {
+  const { logout } = useAuth();
   const links = [
     {
       id: 1,
@@ -18,6 +20,10 @@ const Sidebar = () => {
       icon: <Settings size={20} className="mr-4 h-4 w-4" />,
     },
   ];
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <div className="flex flex-col bg-gray-50 h-screen w-[220px] border-r fixed">
@@ -44,6 +50,7 @@ const Sidebar = () => {
         <div className="mt-auto mx-4">
           <Button
             size={"sm"}
+            onClick={handleLogout}
             className="w-full bg-red-50 border-red-200 text-red-400 hover:bg-red-200 hover:text-red-500"
             variant="outline">
             Logout

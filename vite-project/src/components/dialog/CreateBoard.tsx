@@ -11,15 +11,35 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useModal } from "@/hooks/useModal";
 import { useState } from "react";
+import usePostQuery from "@/hooks/usePostQuery";
+import { toast } from "../ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { Loader } from "lucide-react";
 
 const CreateBoard: React.FC = () => {
+  const { mutate, isPending } = usePostQuery("/api/boards/createNewBoard");
+  const queryClient = useQueryClient();
   const [boardName, setBoardName] = useState("");
   const { isOpen, setClose } = useModal();
 
   const handleCreateBoard = () => {
-    // make a request to backend
-    console.log(boardName);
-    setClose();
+    mutate(
+      {
+        name: boardName,
+      },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Board Created Successfully.",
+            description: "You can now access your board from dashboard.",
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["boardList"],
+          });
+          setClose();
+        },
+      }
+    );
   };
 
   return (
@@ -47,7 +67,11 @@ const CreateBoard: React.FC = () => {
         </div>
         <DialogFooter>
           <Button size={"sm"} type="submit" onClick={handleCreateBoard}>
-            Create Board
+            {isPending ? (
+              <Loader className="animate-spin" size={20} />
+            ) : (
+              "Create Board"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

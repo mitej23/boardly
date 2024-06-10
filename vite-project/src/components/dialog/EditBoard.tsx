@@ -11,6 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useModal } from "@/hooks/useModal";
 import { useState } from "react";
+import { toast } from "../ui/use-toast";
+import usePostQuery from "@/hooks/usePostQuery";
+import { useQueryClient } from "@tanstack/react-query";
+import { Loader } from "lucide-react";
 
 type EditBoardProps = {
   id: string;
@@ -18,13 +22,31 @@ type EditBoardProps = {
 };
 
 const EditBoard: React.FC<EditBoardProps> = ({ id, name }) => {
+  const { mutate, isPending } = usePostQuery("/api/boards/updateBoard");
+  const queryClient = useQueryClient();
   const [boardName, setBoardName] = useState(name);
   const { isOpen, setClose } = useModal();
   const handleClose = () => setClose();
 
   const handleEditBoard = () => {
-    console.log(id, boardName);
-    handleClose();
+    mutate(
+      {
+        id: id,
+        name: boardName,
+      },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Board Created Successfully.",
+            description: "You can now access your board from dashboard.",
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["boardList"],
+          });
+          handleClose();
+        },
+      }
+    );
   };
 
   return (
@@ -50,7 +72,11 @@ const EditBoard: React.FC<EditBoardProps> = ({ id, name }) => {
         </div>
         <DialogFooter>
           <Button size={"sm"} type="submit" onClick={handleEditBoard}>
-            Edit Board
+            {isPending ? (
+              <Loader className="animate-spin" size={20} />
+            ) : (
+              "Edit Board"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
