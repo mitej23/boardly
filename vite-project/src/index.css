@@ -82,3 +82,7 @@
   }
 }
 
+.board-cursor {
+  cursor: url("/cursor.svg") 4 4, auto;
+}
+

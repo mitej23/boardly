@@ -1,0 +1,34 @@
+.button {
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 6px;
+  color: #252629;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:not(:disabled):hover,
+.button:not(:disabled):focus {
+  color: #1d253c;
+}
+
+.button:not(:disabled):active {
+  color: #040c25;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.button_active {
+  color: blue;
+  background-color: lightgray;
+}
+
+.button_active:not(:disabled):hover,
+.button_active:not(:disabled):focus,
+.button_active:not(:disabled):active {
+  color: blue;
+}

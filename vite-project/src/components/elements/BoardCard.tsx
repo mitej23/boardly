@@ -10,6 +10,7 @@ import {
 } from "../ui/dropdown-menu";
 import DeleteBoard from "../dialog/DeleteBoard";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 type BoardCardProps = {
   id: string;
@@ -28,6 +29,7 @@ const BoardCard: React.FC<BoardCardProps> = ({
 }) => {
   const { user } = useAuth();
   const { setOpen } = useModal();
+  const navigate = useNavigate();
 
   const handleEditBoardDialog = () => {
     setOpen(<EditBoard key={id} id={id} name={name} />);
@@ -37,10 +39,14 @@ const BoardCard: React.FC<BoardCardProps> = ({
     setOpen(<DeleteBoard key={id} id={id} />);
   };
 
-  console.log(user);
+  const handleBoardLink = () => {
+    navigate(`/board/${id}`);
+  };
 
   return (
-    <div className="border p-3 rounded shadow-sm">
+    <div
+      className="border p-3 rounded shadow-sm hover:shadow-xl hover:cursor-pointer"
+      onClick={handleBoardLink}>
       <div className="flex flex-row items-center justify-between">
         <p className="font-semibold">{name}</p>
         {user.id === createdById && (
