@@ -1,6 +1,6 @@
 import { colorToCss } from "@/lib/board_utils";
 import { RectangleLayer } from "@/lib/types";
-import React from "react";
+import React, { memo } from "react";
 
 type Props = {
   id: string;
@@ -10,7 +10,7 @@ type Props = {
   selected: boolean;
 };
 
-const Rectangle = ({ layer, onPointerDown, id, selected }: Props) => {
+const Rectangle = memo(({ layer, onPointerDown, id, selected }: Props) => {
   const { x, y, width, height, fill } = layer;
 
   return (
@@ -28,6 +28,6 @@ const Rectangle = ({ layer, onPointerDown, id, selected }: Props) => {
       stroke={selected ? "#2563EB" : "transparent"}
     />
   );
-};
+});
 
 export default Rectangle;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import styles from "./IconButton.module.css";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   disabled?: boolean;
 };
 
-const IconButton = ({ handleOnClick, children, isActive }: Props) => {
+const IconButton = memo(({ handleOnClick, children, isActive }: Props) => {
   return (
     <button
       className={`${styles.button} ${isActive ? styles.button_active : ""}`}
@@ -16,6 +16,6 @@ const IconButton = ({ handleOnClick, children, isActive }: Props) => {
       {children}
     </button>
   );
-};
+});
 
 export default IconButton;

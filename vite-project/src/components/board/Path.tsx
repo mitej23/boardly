@@ -1,5 +1,6 @@
 import { getSvgPathFromStroke } from "@/lib/board_utils";
 import getStroke from "perfect-freehand";
+import { memo } from "react";
 
 type Props = {
   x: number;
@@ -11,7 +12,7 @@ type Props = {
   selected: boolean;
 };
 
-const Path = ({ x, y, onPointerDown, fill, points, selected }: Props) => {
+const Path = memo(({ x, y, onPointerDown, fill, points, selected }: Props) => {
   return (
     <path
       onPointerDown={onPointerDown}
@@ -33,6 +34,6 @@ const Path = ({ x, y, onPointerDown, fill, points, selected }: Props) => {
       strokeWidth={1}
     />
   );
-};
+});
 
 export default Path;

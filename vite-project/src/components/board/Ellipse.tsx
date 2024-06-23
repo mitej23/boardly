@@ -1,6 +1,6 @@
 import { colorToCss } from "@/lib/board_utils";
 import { EllipseLayer } from "@/lib/types";
-import React from "react";
+import React, { memo } from "react";
 
 type Props = {
   id: string;
@@ -10,7 +10,7 @@ type Props = {
   selected: boolean;
 };
 
-const Ellipse = ({ layer, onPointerDown, id, selected }: Props) => {
+const Ellipse = memo(({ layer, onPointerDown, id, selected }: Props) => {
   return (
     <ellipse
       onPointerDown={(e) => onPointerDown(e, id)}
@@ -26,6 +26,6 @@ const Ellipse = ({ layer, onPointerDown, id, selected }: Props) => {
       strokeWidth="1"
     />
   );
-};
+});
 
 export default Ellipse;

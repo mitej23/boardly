@@ -111,7 +111,13 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
       selection: [],
     }));
     provider.setAwarenessField("selection", []);
-  }, [yLayersId, myPresence, yLayers]);
+  }, [
+    myPresence.selection,
+    provider,
+    deleteYLayers,
+    indexOfYLayersId,
+    deleteYLayersId,
+  ]);
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -136,12 +142,12 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
     return () => {
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [myPresence, yLayers, yLayersId]);
+  }, [deleteLayers, myPresence, redo, undo, yLayers, yLayersId]);
 
-  const startDrawing = (point: Point, pressure: number) => {
+  const startDrawing = useCallback((point: Point, pressure: number) => {
     provider.setAwarenessField("pencilDraft", [[point.x, point.y, pressure]]);
     provider.setAwarenessField("penColor", lastUsedColor);
-  };
+  },[lastUsedColor, provider])
 
   const continueDrawing = useCallback(
     (point: Point, e: React.PointerEvent) => {
@@ -177,7 +183,7 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
         }
       });
     },
-    [canvasState.mode, camera]
+    [canvasState.mode, provider, camera.x, camera.y]
   );
 
   const insertPath = useCallback(() => {
@@ -207,12 +213,12 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
       return []; // Clear the pencil draft
     });
   }, [
+    provider,
     lastUsedColor,
-    yLayers,
-    yLayersId,
-    setMyPresence,
-    setCanvasState,
     camera,
+    insertYLayersId,
+    yLayersId.length,
+    setYLayers,
   ]);
 
   const insertLayer = useCallback(
@@ -237,7 +243,7 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
       provider.setAwarenessField("selection", [layerId]);
       setCanvasState({ mode: CanvasMode.None });
     },
-    [lastUsedColor]
+    [insertYLayersId, lastUsedColor, provider, setYLayers, yLayersId.length]
   );
 
   const unselectLayers = useCallback(() => {
@@ -248,7 +254,7 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
       return prevPresence;
     });
     provider.setAwarenessField("pencilDraft", null);
-  }, []);
+  }, [provider]);
 
   const startMultiSelection = useCallback((current: Point, origin: Point) => {
     if (Math.abs(current.x - origin.x) + Math.abs(current.y - origin.y) > 5) {
@@ -285,7 +291,7 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
       });
       provider.setAwarenessField("selection", ids);
     },
-    [yLayers]
+    [provider, yLayers, yLayersId]
   );
 
   const onLayerPointerDown = useCallback(
@@ -307,7 +313,7 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
       }
       setCanvasState({ mode: CanvasMode.Translating, current: point });
     },
-    [setCanvasState, camera, canvasState.mode, myPresence]
+    [canvasState.mode, camera, myPresence?.selection, provider]
   );
 
   const onResizeHandlePointerDown = useCallback(
@@ -338,7 +344,7 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
       const layer = yLayers[layerId];
       setYLayers(layerId, { ...layer, ...bounds });
     },
-    [canvasState, myPresence.selection]
+    [canvasState, myPresence.selection, setYLayers, yLayers]
   );
 
   const translateSelectedLayers = useCallback(
@@ -371,7 +377,7 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
 
       setCanvasState({ mode: CanvasMode.Translating, current: point });
     },
-    [canvasState]
+    [canvasState, myPresence.selection, setYLayers, yLayers]
   );
 
   // ===================================== Pointer Events =====================
@@ -398,7 +404,7 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
       // for selection
       setCanvasState({ origin: point, mode: CanvasMode.Pressing });
     },
-    [camera, canvasState.mode, setCanvasState]
+    [camera, canvasState.mode, startDrawing]
   );
 
   const onPointerMove = (e: React.PointerEvent) => {
@@ -452,16 +458,9 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
       }
       //   // history.resume();
     },
-    [
-      camera,
-      canvasState.mode,
-      insertPath,
-      insertLayer,
-      canvasState,
-      unselectLayers,
-    ]
+    [camera, insertPath, insertLayer, canvasState, unselectLayers]
   );
-
+  
   return (
     <div className="board-cursor">
       <div className="touch-none">

@@ -34,24 +34,40 @@ export const useUndoManager = <T extends unknown = unknown>(
 export const useMap = <T extends unknown = unknown>(
   yMap: Y.Map<T>
 ): {
-  state: { [x: string]: any };
+  state: { [x: string]: T };
   get: (name: string) => T | undefined;
   set: (name: string, value: T) => void;
   delete: (name: string) => void;
 } => {
-  const [value, setValue] = useState<{ [x: string]: any }>(yMap.toJSON());
+  const [map, setMap] = useState<{ [x: string]: T }>(yMap.toJSON());
 
   useEffect(() => {
-    yMap.observe((_) => {
-      setValue(yMap.toJSON());
+    yMap.observe((event) => {
+      if (!event.transaction.local) {
+        setMap(yMap.toJSON());
+      }
     });
-  }, [yMap]);
+  }, []); // it is important to keep it empty because it should be able to load the initial
 
   return {
-    state: value,
-    get: useCallback((name: string) => yMap.get(name), []),
-    set: useCallback((name, value) => yMap.set(name, value), []),
-    delete: useCallback((name) => yMap.delete(name), []),
+    state: map,
+    get: useCallback(
+      (name: string) => {
+        return map[name];
+      },
+      [map]
+    ),
+    set: useCallback(
+      (name, value) => {
+        setMap({
+          ...map,
+          [name]: value,
+        });
+        yMap.set(name, value);
+      },
+      [map]
+    ),
+    delete: useCallback((name) => yMap.delete(name), [yMap]),
   };
 };
 
@@ -73,7 +89,7 @@ export const useArray = <T extends unknown = unknown>(
     yArray.observe((_) => {
       setValue(yArray.toArray());
     });
-  }, [yArray]);
+  }, []);
 
   return {
     state: value,

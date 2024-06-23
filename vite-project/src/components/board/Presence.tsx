@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import Path from "./Path";
 import { Camera, Color, PencilDraft } from "@/lib/types";
 import { connectionIdToColor } from "@/lib/board_utils";
@@ -85,58 +85,62 @@ const OthersCursor = ({ presence, camera, provider }: CursorProps) => {
   );
 };
 
-const LiveAvatar = ({
-  presence,
-  provider,
-}: {
-  presence: YPresence[];
-  provider: HocuspocusProvider;
-}) => {
-  return (
-    <>
-      {
-        <div className="absolute top-4 right-4 flex items-center justify-center">
-          <div className="shadow-md border bg-white rounded-xl bg-surface-panel flex items-center justify-center">
-            <div className="flex items-center justify-center space-x-2 p-2">
-              {/* avatar */}
-              {presence?.map(({ cursor, clientId }) => {
-                if (clientId === provider.awareness!.clientID) return null;
-                if (cursor) {
-                  return (
-                    <TooltipProvider key={clientId}>
-                      <Tooltip delayDuration={100}>
-                        <TooltipTrigger>
-                          <div className="flex items-center justify-center border-2 border-white hover:border-red-500 h-10 w-10 rounded-full bg-red-200">
-                            <p className="tracking-wide text-sm font-semibold text-red-500">
-                              MM
-                            </p>
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent
-                          side="bottom"
-                          className="bg-white rounded mr-8">
-                          <div>
-                            <p className="font-semibold text-sm">Mitej Madan</p>
-                            <p className="text-sm">mitejmadan@gmail.com</p>
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  );
-                }
-              })}
-              <div className="flex items-center justify-center border-2 border-white hover:border-red-500 h-10 w-10 rounded-full bg-red-200">
-                <p className="tracking-wide text-sm font-semibold text-red-500">
-                  You
-                </p>
+const LiveAvatar = memo(
+  ({
+    presence,
+    provider,
+  }: {
+    presence: YPresence[];
+    provider: HocuspocusProvider;
+  }) => {
+    return (
+      <>
+        {
+          <div className="absolute top-4 right-4 flex items-center justify-center">
+            <div className="shadow-md border bg-white rounded-xl bg-surface-panel flex items-center justify-center">
+              <div className="flex items-center justify-center space-x-2 p-2">
+                {/* avatar */}
+                {presence?.map(({ cursor, clientId }) => {
+                  if (clientId === provider.awareness!.clientID) return null;
+                  if (cursor) {
+                    return (
+                      <TooltipProvider key={clientId}>
+                        <Tooltip delayDuration={100}>
+                          <TooltipTrigger>
+                            <div className="flex items-center justify-center border-2 border-white hover:border-red-500 h-10 w-10 rounded-full bg-red-200">
+                              <p className="tracking-wide text-sm font-semibold text-red-500">
+                                MM
+                              </p>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent
+                            side="bottom"
+                            className="bg-white rounded mr-8">
+                            <div>
+                              <p className="font-semibold text-sm">
+                                Mitej Madan
+                              </p>
+                              <p className="text-sm">mitejmadan@gmail.com</p>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    );
+                  }
+                })}
+                <div className="flex items-center justify-center border-2 border-white hover:border-red-500 h-10 w-10 rounded-full bg-red-200">
+                  <p className="tracking-wide text-sm font-semibold text-red-500">
+                    You
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      }
-    </>
-  );
-};
+        }
+      </>
+    );
+  }
+);
 
 export const OtherPencilDrafts = ({
   presence,

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@hocuspocus/provider": "^2.13.2",
+    "@million/lint": "^1.0.0-rc.26",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",

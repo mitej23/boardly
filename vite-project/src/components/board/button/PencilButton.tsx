@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import IconButton from "./IconButton";
 
 type Props = {
@@ -6,7 +6,7 @@ type Props = {
   handleOnClick: () => void;
 };
 
-const PencilButton = ({ isActive, handleOnClick }: Props) => {
+const PencilButton = memo(({ isActive, handleOnClick }: Props) => {
   return (
     <IconButton isActive={isActive} handleOnClick={handleOnClick}>
       <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
@@ -17,6 +17,6 @@ const PencilButton = ({ isActive, handleOnClick }: Props) => {
       </svg>
     </IconButton>
   );
-};
+});
 
 export default PencilButton;
