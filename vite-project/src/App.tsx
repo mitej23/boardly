@@ -14,6 +14,8 @@ import Settings from "./pages/user/settings.tsx";
 import ModalProvider from "./hooks/useModal.tsx";
 import LandingPage from "./pages/user/landing_page.tsx";
 import Board from "./pages/user/board.tsx";
+import NotFound from "./pages/404.tsx";
+import ShareBoard from "./pages/user/share_board.page.tsx";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +32,8 @@ function App() {
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/board/:boardId" element={<Board />} />
+                  <Route path="/share/:boardId" element={<ShareBoard />} />
+                  <Route path="/board" element={<NotFound />} />
                 </Route>
                 <Route element={<AuthRoutes />}>
                   <Route path="/register" element={<Register />} />

@@ -122,4 +122,31 @@ const deleteBoard = async (req, res) => {
   }
 };
 
-export { getUserBoards, getBoardById, createBoard, updateBoard, deleteBoard };
+const addUserToBoard = async (req, res) => {
+  try {
+    const { boardId } = req.body;
+    const userId = req.user.id;
+
+
+    const result = await db.select().from(users_boards)
+      .where(and(eq(userId, users_boards.userId), eq(boardId, users_boards.boardId)))
+
+    if (!result.length > 0) {
+      await db.insert(users_boards).values({
+        userId,
+        boardId: boardId,
+      });
+
+      return res.status(200).json({ message: 'Added as a collaborator' });
+    }
+
+    return res.status(200).json({ message: 'Already a collaborator' });
+
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+export { getUserBoards, getBoardById, createBoard, updateBoard, deleteBoard, addUserToBoard };

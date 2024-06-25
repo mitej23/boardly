@@ -1,4 +1,4 @@
-import { text, varchar, timestamp, uuid, pgTable } from 'drizzle-orm/pg-core';
+import { text, varchar, timestamp, uuid, pgTable, primaryKey } from 'drizzle-orm/pg-core';
 
 // Define the User table schema
 export const users = pgTable('users', {
@@ -14,6 +14,10 @@ export const users = pgTable('users', {
 export const users_boards = pgTable('users_boards', {
   userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
   boardId: uuid('board_id').references(() => boards.id, { onDelete: 'cascade' }),
+}, (table) => {
+  return {
+    pk: primaryKey({ columns: [table.userId, table.boardId] }),
+  };
 });
 
 export const boards = pgTable('boards', {

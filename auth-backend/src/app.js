@@ -23,6 +23,22 @@ const server = Server.configure({
   async connected() {
     console.log("connections:", server.getConnectionsCount());
   },
+  async onAuthenticate(data) {
+    const { token, documentName } = data;
+    const { id } = JSON.parse(token);
+
+    const result = await db
+      .select()
+      .from(users_boards)
+      .where(and(eq(id, users_boards.userId), eq(documentName, users_boards.boardId)));
+
+    if (result.length > 0) {
+      return JSON.parse(token)
+    }
+
+    throw new Error("Not authorized!");
+
+  },
   async onStoreDocument({
     clientsCount,
     context,
@@ -61,6 +77,9 @@ app.use(cookieParser())
 // routes
 import userRoutes from "./routes/user.routes.js"
 import boardRoutes from "./routes/board.routes.js"
+import { db } from "./db/index.js";
+import { users_boards } from "./db/schema.js";
+import { and, eq } from "drizzle-orm";
 app.use("/api/users", userRoutes)
 app.use("/api/boards", boardRoutes)
 // websocket - hocuspocus

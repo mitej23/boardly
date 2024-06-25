@@ -18,7 +18,7 @@ import {
 } from "@/lib/types.ts";
 import { nanoid } from "nanoid";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useUsers } from "y-presence";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
@@ -33,36 +33,55 @@ import LayerComponent from "@/components/board/LayerComponent";
 import SelectionBox from "@/components/board/SelectionBox";
 import Path from "@/components/board/Path";
 import ToolsBar from "@/components/board/ToolsBar";
+import { Loader } from "lucide-react";
+import NotFound from "../404";
+import { useAuth } from "@/hooks/useAuth";
 
 const Board = () => {
+  const { user } = useAuth();
   const { boardId } = useParams();
   const provider = useRef<HocuspocusProvider>();
   const [loading, setLoading] = useState(true);
+  const [noAuth, setNoAuth] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && boardId) {
-      console.log("inside");
       provider.current = new HocuspocusProvider({
         url: "ws://127.0.0.1:3000/collaboration",
         name: boardId,
-        onConnect: () => {
-          console.log("started");
+        token: JSON.stringify(user),
+        onConnect: () => {},
+        onAuthenticated() {
+          setLoading(false);
+        },
+        onAuthenticationFailed: () => {
+          setNoAuth(true);
           setLoading(false);
         },
       });
     }
-  }, [boardId]);
+  }, [boardId, user]);
 
   if (!boardId) {
-    return <p>Board does not exists!!!</p>;
+    return <NotFound />;
   }
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-screen w-screen bg-gray-100">
+        <Loader className="animate-spin" size={20} />
+      </div>
+    );
+
+  if (noAuth) {
+    return <NotFound />;
+  }
 
   return provider.current && <BoardCanvas provider={provider.current} />;
 };
 
 const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
+  const { user: me } = useAuth();
   const users = useUsers(provider!.awareness!);
   const u: YPresence[] = Array.from(users.keys()).map((key) => {
     const values = users.get(key);
@@ -97,6 +116,13 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
     b: 42,
   });
   const [pencilDraft, setPencilDraft] = useState<PencilDraft>([]);
+
+  useEffect(() => {
+    provider.setAwarenessField("user", {
+      name: me.name,
+      email: me.email,
+    });
+  }, []);
 
   const deleteLayers = useCallback(() => {
     const ids = myPresence.selection;
@@ -144,10 +170,13 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
     };
   }, [deleteLayers, myPresence, redo, undo, yLayers, yLayersId]);
 
-  const startDrawing = useCallback((point: Point, pressure: number) => {
-    provider.setAwarenessField("pencilDraft", [[point.x, point.y, pressure]]);
-    provider.setAwarenessField("penColor", lastUsedColor);
-  },[lastUsedColor, provider])
+  const startDrawing = useCallback(
+    (point: Point, pressure: number) => {
+      provider.setAwarenessField("pencilDraft", [[point.x, point.y, pressure]]);
+      provider.setAwarenessField("penColor", lastUsedColor);
+    },
+    [lastUsedColor, provider]
+  );
 
   const continueDrawing = useCallback(
     (point: Point, e: React.PointerEvent) => {
@@ -460,7 +489,7 @@ const BoardCanvas = ({ provider }: { provider: HocuspocusProvider }) => {
     },
     [camera, insertPath, insertLayer, canvasState, unselectLayers]
   );
-  
+
   return (
     <div className="board-cursor">
       <div className="touch-none">

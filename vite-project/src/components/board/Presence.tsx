@@ -9,6 +9,11 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { HocuspocusProvider } from "@hocuspocus/provider";
+import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
+import { useModal } from "@/hooks/useModal";
+import ShareBoard from "../dialog/ShareBoard";
+import { useParams } from "react-router-dom";
 
 const Cursor = React.memo(
   ({ point, color }: { point: number[]; color?: string }) => {
@@ -43,6 +48,10 @@ export type YPresence = {
   selection?: string[];
   cursor?: { x: number; y: number } | null;
   clientId: number;
+  user?: {
+    name: string;
+    email: string;
+  };
 };
 
 type CursorProps = {
@@ -93,23 +102,37 @@ const LiveAvatar = memo(
     presence: YPresence[];
     provider: HocuspocusProvider;
   }) => {
+    const { boardId } = useParams();
+    const { setOpen } = useModal();
+
+    const handleShareModal = () => {
+      if (boardId) setOpen(<ShareBoard boardId={boardId} />);
+    };
+
     return (
       <>
         {
           <div className="absolute top-4 right-4 flex items-center justify-center">
             <div className="shadow-md border bg-white rounded-xl bg-surface-panel flex items-center justify-center">
-              <div className="flex items-center justify-center space-x-2 p-2">
+              <div className="flex items-center justify-center space-x-2 p-2 h-14">
                 {/* avatar */}
-                {presence?.map(({ cursor, clientId }) => {
+                {presence?.map(({ clientId, user }) => {
                   if (clientId === provider.awareness!.clientID) return null;
-                  if (cursor) {
+                  if (user) {
                     return (
                       <TooltipProvider key={clientId}>
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger>
-                            <div className="flex items-center justify-center border-2 border-white hover:border-red-500 h-10 w-10 rounded-full bg-red-200">
-                              <p className="tracking-wide text-sm font-semibold text-red-500">
-                                MM
+                            <div className="flex items-center justify-center border-2 border-white hover:border-red-500 h-8 w-8 rounded-full bg-red-200">
+                              <p className="tracking-wide text-xs font-semibold text-red-500">
+                                {user?.name
+                                  ?.split(/\s/)
+                                  .reduce(
+                                    (response, word) =>
+                                      (response += word.slice(0, 1)),
+                                    ""
+                                  )
+                                  .toUpperCase()}
                               </p>
                             </div>
                           </TooltipTrigger>
@@ -118,9 +141,9 @@ const LiveAvatar = memo(
                             className="bg-white rounded mr-8">
                             <div>
                               <p className="font-semibold text-sm">
-                                Mitej Madan
+                                {user?.name}
                               </p>
-                              <p className="text-sm">mitejmadan@gmail.com</p>
+                              <p className="text-sm">{user?.email}</p>
                             </div>
                           </TooltipContent>
                         </Tooltip>
@@ -129,10 +152,20 @@ const LiveAvatar = memo(
                   }
                 })}
                 <div className="flex items-center justify-center border-2 border-white hover:border-red-500 h-10 w-10 rounded-full bg-red-200">
-                  <p className="tracking-wide text-sm font-semibold text-red-500">
+                  <p className="tracking-wide text-xs font-semibold text-red-500">
                     You
                   </p>
                 </div>
+                <Separator
+                  orientation="vertical"
+                  className="h-4/6 self-center"
+                />
+                <Button
+                  size={"sm"}
+                  className="self-center h-9 text-sm"
+                  onClick={handleShareModal}>
+                  Share
+                </Button>
               </div>
             </div>
           </div>

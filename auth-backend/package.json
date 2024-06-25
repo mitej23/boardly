@@ -19,7 +19,7 @@
   "author": "Mitej Madan",
   "license": "ISC",
   "devDependencies": {
-    "drizzle-kit": "^0.22.1",
+    "drizzle-kit": "^0.22.7",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.3"
   },
