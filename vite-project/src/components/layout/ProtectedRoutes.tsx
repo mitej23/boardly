@@ -1,9 +1,11 @@
 import { useAuth } from "@/hooks/useAuth";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 const ProtectedRoutes = () => {
   const { user } = useAuth();
-  return user ? <Outlet /> : <Navigate to={"/login"} />;
+  const { pathname } = useLocation();
+
+  return user ? <Outlet /> : <Navigate to={`/login?redirect=${pathname}`} />;
 };
 
 export default ProtectedRoutes;
