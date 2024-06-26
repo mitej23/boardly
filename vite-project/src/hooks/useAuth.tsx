@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { createContext, useContext, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type AuthContextType = {
   user: any;
-  login: (data: any) => Promise<void>;
+  login: (data: any, redirect?: string) => Promise<void>;
   logout: () => void;
 };
 
@@ -13,7 +13,6 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [searchParams] = useSearchParams();
   const [user, setUser] = useState<any>(() => {
     // Retrieve user data from local storage if it exists
     const storedUser = localStorage.getItem("user");
@@ -21,13 +20,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   });
   const navigate = useNavigate();
 
-  const login = async (data: any) => {
+  const login = async (data: any, redirect?: string) => {
     setUser(data);
     localStorage.setItem("user", JSON.stringify(data)); // Save user data to local storage
-    if (searchParams.get("redirect")) {
-      navigate(`${searchParams.get("redirect")}`);
+    if (redirect) {
+      navigate(`${redirect}`);
       return;
     }
+    console.log("no redirect");
     navigate("/dashboard");
   };
 

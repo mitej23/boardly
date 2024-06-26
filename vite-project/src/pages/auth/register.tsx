@@ -14,8 +14,10 @@ import { Loader } from "lucide-react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import usePostQuery from "@/hooks/usePostQuery";
+import { useAuth } from "@/hooks/useAuth";
 
 const Register = () => {
+  const { login } = useAuth();
   const [searchParams] = useSearchParams();
   const { mutate, isPending, isError, error } = usePostQuery(
     "/api/users/register"
@@ -29,7 +31,14 @@ const Register = () => {
 
   const onhandleRegsiter = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate({ ...userDetails });
+    mutate(
+      { ...userDetails },
+      {
+        onSuccess: (data) => {
+          login(data, searchParams.get("redirect") || undefined);
+        },
+      }
+    );
   };
 
   const onhandleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

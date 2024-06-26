@@ -17,9 +17,8 @@ const ShareBoard = () => {
       },
       {
         onSuccess: (data) => {
-          console.log(data);
           toast({
-            title: "Successfully Added Board",
+            title: data.message,
             description: "You can now access this board from dashboard.",
           });
           navigate(`/board/${boardId}`);

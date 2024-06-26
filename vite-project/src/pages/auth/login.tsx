@@ -28,7 +28,7 @@ const Login = () => {
       { ...userDetails },
       {
         onSuccess: (data) => {
-          login(data);
+          login(data, searchParams.get("redirect") || undefined);
         },
       }
     );
