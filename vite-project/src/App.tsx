@@ -1,4 +1,10 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import "./App.css";
 import { AuthProvider } from "./hooks/useAuth.tsx";
 import Login from "./pages/auth/login.tsx";
@@ -17,8 +23,31 @@ import Board from "./pages/user/board.tsx";
 import NotFound from "./pages/404.tsx";
 import ShareBoard from "./pages/user/share_board.page.tsx";
 
-const queryClient = new QueryClient();
+export const UNAUTHORIZED_EVENT = "unauthorized_error";
+const handleError = (error: any) => {
+  if (error?.response?.status === 401) {
+    console.log("Unauthorized error occurred");
+    window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
+  }
+  // Handle other types of errors if needed
+};
 
+export const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: handleError,
+  }),
+  mutationCache: new MutationCache({
+    onError: handleError,
+  }),
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error: any) => {
+        if (error?.response?.status === 401) return false;
+        return failureCount < 3;
+      },
+    },
+  },
+});
 function App() {
   return (
     <>
