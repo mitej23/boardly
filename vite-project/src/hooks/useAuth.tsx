@@ -94,7 +94,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const handleUnauthorized = () => {
       logout();
-      navigate("/login");
     };
 
     window.addEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
