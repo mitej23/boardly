@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import { Loader } from "lucide-react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -34,7 +34,7 @@ const Login = () => {
     );
   };
 
-  const onhandleGoogle = () => {};
+  // const onhandleGoogle = () => {};
 
   const onhandleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -89,7 +89,7 @@ const Login = () => {
                 * {error?.message}
               </p>
             )}
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <Separator className={cn("flex-1")} />
               <p className="px-4 text-slate-400">or</p>
               <Separator className={cn("flex-1")} />
@@ -99,11 +99,15 @@ const Login = () => {
               variant="outline"
               className="w-full">
               Continue with Google
-            </Button>
+            </Button> */}
             <div className="mt-4 text-center text-sm">
               Don't have an account?{" "}
               <Link
-                to={`/register?redirect=${searchParams.get("redirect")}`}
+                to={`/register${
+                  searchParams.get("redirect")
+                    ? `?redirect=${searchParams.get("redirect")}`
+                    : ""
+                }`}
                 className="underline">
                 Register
               </Link>

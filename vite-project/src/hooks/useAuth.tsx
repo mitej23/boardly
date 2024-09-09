@@ -60,6 +60,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setUser(parsedUser);
           setIsLoading(false);
         }
+      } else {
+        // No user found, stop loading
+        setIsLoading(false);
       }
     };
 

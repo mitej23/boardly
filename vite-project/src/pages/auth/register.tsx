@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import { Loader } from "lucide-react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -49,7 +49,7 @@ const Register = () => {
     });
   };
 
-  const onhandleGoogle = () => {};
+  // const onhandleGoogle = () => {};
 
   return (
     <div className="flex items-center justify-center h-screen">
@@ -106,7 +106,7 @@ const Register = () => {
                 * {error?.message}
               </p>
             )}
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <Separator className={cn("flex-1")} />
               <p className="px-4 text-slate-400">or</p>
               <Separator className={cn("flex-1")} />
@@ -116,11 +116,15 @@ const Register = () => {
               variant="outline"
               className="w-full">
               Continue with Google
-            </Button>
+            </Button> */}
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
               <Link
-                to={`/login?redirect=${searchParams.get("redirect")}`}
+                to={`/login${
+                  searchParams.get("redirect")
+                    ? `?redirect=${searchParams.get("redirect")}`
+                    : ""
+                }`}
                 className="underline">
                 Login In
               </Link>
