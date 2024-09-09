@@ -31,11 +31,13 @@ const BoardCard: React.FC<BoardCardProps> = ({
   const { setOpen } = useModal();
   const navigate = useNavigate();
 
-  const handleEditBoardDialog = () => {
+  const handleEditBoardDialog = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setOpen(<EditBoard key={id} id={id} name={name} />);
   };
 
-  const handleDeleteBoardDialog = () => {
+  const handleDeleteBoardDialog = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setOpen(<DeleteBoard key={id} id={id} />);
   };
 

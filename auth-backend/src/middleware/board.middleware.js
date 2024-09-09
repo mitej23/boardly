@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { db } from '../db/index.js';
-import { users } from '../db/schema.js';
-import { eq } from 'drizzle-orm';
+import { users, users_boards } from '../db/schema.js';
+import { and, eq } from 'drizzle-orm';
 
 export const checkUserBoardAccess = async (req, res, next) => {
   const userId = req.user.id; // Assuming user ID is available in the req.user object

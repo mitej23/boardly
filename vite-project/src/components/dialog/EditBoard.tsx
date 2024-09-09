@@ -37,7 +37,7 @@ const EditBoard: React.FC<EditBoardProps> = ({ id, name }) => {
       {
         onSuccess: () => {
           toast({
-            title: "Board Created Successfully.",
+            title: "Board Details Updated Successfully.",
             description: "You can now access your board from dashboard.",
           });
           queryClient.invalidateQueries({
